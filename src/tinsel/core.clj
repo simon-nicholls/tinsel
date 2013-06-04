@@ -270,7 +270,7 @@
   (let [html-string (if (string? string-or-reader)
                       string-or-reader
                       (slurp string-or-reader))]
-    (hickory/parse html-string)))
+    (hickory/as-hiccup (hickory/parse html-string))))
 
 (defn html-fragment
   "Parse an HTML fragment out of the argument given, which can be either a
@@ -279,7 +279,7 @@
   (let [html-string (if (string? string-or-reader)
                       string-or-reader
                       (slurp string-or-reader))]
-    (hickory/parse-fragment html-string)))
+    (map hickory/as-hiccup (hickory/parse-fragment html-string))))
 
 (defn hiccup-file
   "Parse hiccup forms out of the argument."
