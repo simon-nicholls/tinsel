@@ -395,3 +395,21 @@
 (deftest test-string-as-form
   (is (= "<!DOCTYPE html><html><body></body></html><!--asdf-->"
          (string-as-form-template))))
+
+(def ^:private single-hiccup-form
+  [:table [:tr [:td "target1"] [:td#target2 "target2"]]])
+
+(def ^:private multiple-hiccup-forms
+  [[:div [:span "target3"]] [:span "target4"]])
+
+;; Test the filtering of single and multiple Hiccup forms, and filter chaining.
+(deftest test-filter-hiccup
+  (is (= [["td" {:id "target2" :class nil} "target2"]]
+         (filter-hiccup (id= :target2) single-hiccup-form)))
+  (is (= [["span" {:id nil :class nil} "target3"]
+          ["span" {:id nil :class nil} "target4"]]
+         (filter-hiccup (tag= :span) multiple-hiccup-forms)))
+  (is (= [["td" {:id "target2" :class nil} "target2"]]
+         (->> single-hiccup-form
+              (filter-hiccup (tag= :tr))
+              (filter-hiccup (id= :target2))))))

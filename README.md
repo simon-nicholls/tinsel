@@ -125,6 +125,21 @@ value of either as the template argument to `deftemplate`:
   (set-content [:head [:title (:msg arg-map)]]))
 ```
 
+###Template Cropping###
+
+Hiccup can be cropped to selected sub-forms by use of the `filter-hiccup`
+function. This is particularly useful for creating multiple templates from
+designer provided HTML resources:
+
+```clojure
+(deftemplate session
+  (filter-hiccup (id= "login")
+                 (html-document (clojure.java.io/resource "index.html")))
+  [{:keys [identity]}]
+  (has-class? "username")
+  (set-content ^String identity))
+```
+
 Selectors and Transformers
 --------------------------
 

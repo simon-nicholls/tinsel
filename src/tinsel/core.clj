@@ -285,3 +285,23 @@
   "Parse hiccup forms out of the argument."
   [file-path]
   (vector (load file-path)))
+
+;;
+;; Template Utilities
+;;
+
+(defn filter-hiccup
+  "Given a selector and some Hiccup, filters to select matching Hiccup forms.
+   N.B. Normalizes the returned Hiccup."
+  [select? hiccup]
+  (let [multiple? (comp vector? first)
+        filter-fn (fn [form]
+                    (->> form
+                         utils/normalize-form
+                         tzip/hiccup-zip
+                         tzip/postorder-seq
+                         (filter select?)
+                         (map zip/node)))]
+    (if (multiple? hiccup)
+      (mapcat filter-fn hiccup)
+      (filter-fn hiccup))))
