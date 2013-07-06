@@ -96,3 +96,8 @@
   (is (= :7 (zip/node (-> vzip3 postorder-first postorder-next))))
   (is (= :6 (zip/node (-> vzip3 postorder-first postorder-next
                           postorder-next)))))
+
+(deftest test-postorder-seq
+  (is (= [[:1] [:2] [:3 [:2]] [:4 [:1] [:3 [:2]]] [:5] [:6 [:5]] [:7]
+          [:8 [:4 [:1] [:3 [:2]]] [:6 [:5]] [:7]]]
+         (->> hzip1 postorder-seq (map first)))))

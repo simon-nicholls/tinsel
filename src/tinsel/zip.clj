@@ -100,3 +100,25 @@
       (or (and (zip/right loc) (leftmost-descendant (zip/right loc)))
           ;; There was no right sibling, we must move back up the tree.
           (zip/up loc)))))
+
+(defn root-loc
+  "Moves to the root zipper location."
+  [loc]
+  (if (= :end (loc 1))
+    loc
+    (loop [p (zip/up loc)]
+      (if p
+        (recur p)
+        loc))))
+
+(defn- postorder-seq-from-loc
+  "Returns a postwalk order seq of nodes, from the current zipper location."
+  [loc]
+  (lazy-seq
+   (when-not (zip/end? loc)
+     (cons loc (postorder-seq-from-loc (postorder-next loc))))))
+
+(defn postorder-seq
+  "Returns a seq of all the zipper nodes, in postwalk order."
+  [loc]
+  (-> loc root-loc postorder-first postorder-seq-from-loc))
